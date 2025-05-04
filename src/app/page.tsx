@@ -1,11 +1,59 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { wordFormSchema } from "@/lib/validation";
+import StartScreen from "@/components/StartScreen";
+import GameScreen from "@/components/GameScreen";
+import Header from "@/components/Header";
 
 export default function Home() {
+  const [initialWord, setInitialWord] = useState("");
+  const [gameStarted, setGameStarted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!initialWord) {
+      setError(null);
+      return;
+    }
+    const result = wordFormSchema.safeParse(initialWord);
+    if (!result.success) {
+      setError(result.error.errors[0].message);
+    } else {
+      setError(null);
+    }
+  }, [initialWord]);
+
+  const handleStartGame = (word: string) => {
+    setInitialWord(word);
+    setGameStarted(true);
+  };
+
+  const resetGame = () => {
+    setInitialWord("");
+    setError(null);
+    setGameStarted(false);
+  };
+
+  if (!gameStarted) {
+    return (
+      <>
+        <Header onTitleClick={resetGame} />
+        <div className="flex-1 flex items-center justify-center">
+          <StartScreen
+            initialWord={initialWord}
+            setInitialWord={setInitialWord}
+            handleStartGame={handleStartGame}
+          />
+        </div>
+      </>
+    );
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      </main>
-    </div>
+    <>
+      <Header onTitleClick={resetGame} />
+      <GameScreen initialWord={initialWord} resetGame={resetGame} />
+    </>
   );
 }
