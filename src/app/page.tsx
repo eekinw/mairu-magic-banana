@@ -1,22 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { wordFormSchema } from "@/lib/validation";
+import wordSchema from "@/lib/validation";
 import StartScreen from "@/components/StartScreen";
 import GameScreen from "@/components/GameScreen";
 import Header from "@/components/Header";
+import Lottie from "lottie-react";
+import bananaAnimation from "@/assets/lotties/banana-animation.json";
 
 export default function Home() {
   const [initialWord, setInitialWord] = useState("");
   const [gameStarted, setGameStarted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!initialWord) {
       setError(null);
       return;
     }
-    const result = wordFormSchema.safeParse(initialWord);
+    const result = wordSchema.safeParse(initialWord);
     if (!result.success) {
       setError(result.error.errors[0].message);
     } else {
@@ -24,8 +27,12 @@ export default function Home() {
     }
   }, [initialWord]);
 
-  const handleStartGame = (word: string) => {
+  const handleStartGame = async (word: string) => {
+    setIsLoading(true);
     setInitialWord(word);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
     setGameStarted(true);
   };
 
@@ -33,27 +40,32 @@ export default function Home() {
     setInitialWord("");
     setError(null);
     setGameStarted(false);
+    setIsLoading(false);
   };
 
-  if (!gameStarted) {
-    return (
-      <>
-        <Header onTitleClick={resetGame} />
+  return (
+    <>
+      {isLoading && (
+        <div className="fixed inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center">
+          <Lottie
+            animationData={bananaAnimation}
+            style={{ width: 150, height: 150 }}
+          />
+        </div>
+      )}
+      <Header onTitleClick={resetGame} />
+      {gameStarted ? (
+        <GameScreen initialWord={initialWord} resetGame={resetGame} />
+      ) : (
         <div className="flex-1 flex items-center justify-center">
           <StartScreen
             initialWord={initialWord}
             setInitialWord={setInitialWord}
             handleStartGame={handleStartGame}
+            error={error}
           />
         </div>
-      </>
-    );
-  }
-
-  return (
-    <>
-      <Header onTitleClick={resetGame} />
-      <GameScreen initialWord={initialWord} resetGame={resetGame} />
+      )}
     </>
   );
 }
