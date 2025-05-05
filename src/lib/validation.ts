@@ -14,6 +14,4 @@ const wordSchema = z
     { message: "記号は使えません" }
 );
   
-export const wordFormSchema = z.object({
-  word: wordSchema,
-});
+export default wordSchema
