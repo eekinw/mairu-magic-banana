@@ -1,27 +1,25 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { wordFormSchema } from "@/lib/validation";
 
 type StartScreenProps = {
   initialWord: string;
   setInitialWord: (word: string) => void;
   handleStartGame: (word: string) => void;
+  error: string | null;
 };
 
 const StartScreen = ({
   initialWord,
   setInitialWord,
   handleStartGame,
+  error,
 }: StartScreenProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     watch,
-    setValue,
   } = useForm<{ word: string }>({
-    resolver: zodResolver(wordFormSchema),
     mode: "onChange",
     defaultValues: { word: initialWord },
   });
@@ -47,7 +45,6 @@ const StartScreen = ({
               errors.word ? "border-red-500" : ""
             }`}
             required
-            autoComplete="off"
           />
           <button
             type="submit"
@@ -57,9 +54,9 @@ const StartScreen = ({
             ▶
           </button>
         </div>
-        {errors.word && (
+        {(errors.word || error) && (
           <div className="text-red-500 text-sm mt-2 w-full text-center">
-            {errors.word.message as string}
+            {(errors.word?.message as string) || error}
           </div>
         )}
       </form>

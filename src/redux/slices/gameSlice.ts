@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IGame } from "@/utils";
 import { v4 as uuidv4 } from "uuid";
-import { getOutgoers } from '@xyflow/react';
+import { getOutgoers, Position } from '@xyflow/react';
 
 const initialState: IGame = {
     nodes: [],
@@ -30,7 +30,9 @@ export const gameSlice = createSlice({
                 id: uuidv4(),
                 type: "banana" as const,
                 data: { label: action.payload },
-                position: { x: 100, y: 150 }
+                position: { x: -150, y: 50 },
+                sourcePosition: Position.Right,
+                targetPosition: Position.Left,
             };
             state.nodes = [node];
             state.edges = [];
@@ -41,7 +43,6 @@ export const gameSlice = createSlice({
     const nodeToDelete = state.nodes.find(n => n.id === action.payload);
     if (!nodeToDelete) return;
 
-    // Get all descendants recursively
     const descendants = getOutgoers(nodeToDelete, state.nodes, state.edges);
     const allNodesToDelete = [nodeToDelete.id, ...descendants.map(n => n.id)];
 
@@ -61,9 +62,11 @@ export const gameSlice = createSlice({
                 type: "banana" as const,
                 data: { label: action.payload.word },
                 position: {
-                    x: parentNode.position.x,
-                    y: parentNode.position.y + 100
-                }
+                    x: parentNode.position.x + 150,
+                    y: parentNode.position.y
+                },
+                sourcePosition: Position.Right,
+                targetPosition: Position.Left,
             };
 
             const newEdge = {
