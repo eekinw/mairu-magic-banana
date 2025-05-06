@@ -4,7 +4,7 @@ import {
   Node,
   useNodesState,
   useEdgesState,
-  // Background,
+  Background,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import BananaNode from "./BananaNode";
@@ -40,6 +40,8 @@ const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [isGenerating, setIsGenerating] = useState(false);
+  // to hide 'ReactFlow' label on the view
+  const proOptions = { hideAttribution: true };
 
   useEffect(() => {
     setNodes(
@@ -131,9 +133,10 @@ const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
             setActiveNode(null);
             setSuggestions([]);
           }}
+          proOptions={proOptions}
           fitView
         >
-          {/* <Background /> */}
+          <Background />
         </ReactFlow>
       </div>
       {resetGame && (
