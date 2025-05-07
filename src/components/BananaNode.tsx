@@ -10,6 +10,9 @@ type CustomNodeData = {
   onSuggestionSelect?: (word: string) => void;
   isActive?: boolean;
   isGenerating?: boolean;
+  hasError?: boolean;
+  errorMessage?: string | null;
+  onRetry?: () => void;
 };
 
 function BananaNode({ data, selected, dragging }: NodeProps) {
@@ -27,14 +30,15 @@ function BananaNode({ data, selected, dragging }: NodeProps) {
         isVisible={
           nodeData.isActive &&
           (nodeData.isGenerating ||
+            nodeData.hasError ||
             (nodeData.suggestions && nodeData.suggestions.length > 0))
         }
         position={Position.Right}
         offset={5}
-        className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden relative"
+        className="bg-white rounded-lg shadow-lg border border-gray-200 relative"
       >
         <button
-          className="absolute right-0 top-0 opacity-70 hover:opacity-100 transition-opacity text-xs bg-red-200 text-red-700 rounded-full w-5 h-5 flex items-center justify-center z-50"
+          className="absolute -right-1 -top-2 opacity-70 hover:opacity-100 transition-opacity text-xs bg-red-200 text-red-700 rounded-full w-6 h-6 flex items-center justify-center z-50"
           onClick={(e) => {
             e.stopPropagation();
             nodeData.onSuggestionSelect?.("");
@@ -50,6 +54,18 @@ function BananaNode({ data, selected, dragging }: NodeProps) {
                 animationData={loadingAnimation}
                 style={{ width: 50, height: 50 }}
               />
+            </div>
+          ) : nodeData.hasError ? (
+            <div className="p-4 flex flex-col gap-2">
+              <div className="text-red-600 text-sm">
+                {nodeData.errorMessage || "エラーが発生しました"}
+              </div>
+              <button
+                className="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-1 rounded-md text-sm self-center"
+                onClick={() => nodeData.onRetry?.()}
+              >
+                再試行
+              </button>
             </div>
           ) : (
             nodeData.suggestions?.map((word) => (

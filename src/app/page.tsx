@@ -32,7 +32,7 @@ export default function Home() {
     setInitialWord(word);
     setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 1000); // 理想的な実装ではないが、ユーザーによりスムーズなゲーム体験を提供するためのアニメーション
     setGameStarted(true);
   };
 
@@ -55,7 +55,7 @@ export default function Home() {
       )}
       <Header onTitleClick={resetGame} />
       {gameStarted ? (
-        <GameScreen initialWord={initialWord} resetGame={resetGame} />
+        <GameScreen initialWord={initialWord} />
       ) : (
         <div className="flex-1 flex items-center justify-center">
           <StartScreen

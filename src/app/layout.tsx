@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ひとりマジカルバナナ",
   description: "Magic Banana Powered by Gemini",
+  icons: [{ rel: "icon", url: "/banana.svg" }],
 };
 
 export default function RootLayout({
@@ -29,7 +30,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <main className="container mx-auto p-4">{children}</main>
+          <main className="container mx-auto p-4 h-screen flex flex-col">
+            {children}
+          </main>
         </Providers>
       </body>
     </html>

@@ -10,6 +10,7 @@ import "@xyflow/react/dist/style.css";
 import BananaNode from "./BananaNode";
 import { generateWords } from "@/actions/generateWords";
 import useGame from "@/hooks/useGame";
+import { FaUndo, FaRedo } from "react-icons/fa";
 
 const nodeTypes = {
   banana: BananaNode,
@@ -17,10 +18,9 @@ const nodeTypes = {
 
 type GameScreenProps = {
   initialWord: string;
-  resetGame?: () => void;
 };
 
-const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
+const GameScreen = ({ initialWord }: GameScreenProps) => {
   const {
     nodes: initialNodes,
     edges: initialEdges,
@@ -40,6 +40,7 @@ const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [geminiApiError, setGeminiApiError] = useState<string | null>(null);
   // to hide 'ReactFlow' label on the view
   const proOptions = { hideAttribution: true };
 
@@ -56,18 +57,26 @@ const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
           suggestions: node.id === activeNode ? suggestions : [],
           isActive: node.id === activeNode,
           isGenerating: node.id === activeNode && isGenerating,
+          hasError: node.id === activeNode && geminiApiError !== null,
           onSuggestionSelect: (word: string) => {
             if (word) {
               addNode(node.id, word);
+              setGeminiApiError(null);
             }
             setActiveNode(null);
             setSuggestions([]);
             setIsGenerating(false);
           },
+          onRetry: () => {
+            if (node.data.label) {
+              handleNodeClick(null, node);
+            }
+          },
         },
       }))
     );
     setEdges(initialEdges);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     initialNodes,
     initialEdges,
@@ -78,6 +87,7 @@ const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
     setActiveNode,
     setSuggestions,
     isGenerating,
+    geminiApiError,
   ]);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -85,7 +95,10 @@ const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  const handleNodeClick = async (event: React.MouseEvent, node: Node) => {
+  const handleNodeClick = async (
+    event: React.MouseEvent | null,
+    node: Node
+  ) => {
     setActiveNode(node.id);
     try {
       setIsGenerating(true);
@@ -95,6 +108,9 @@ const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
     } catch (error) {
       console.error("Failed to generate words from Gemini", error);
       setIsGenerating(false);
+      setGeminiApiError(
+        "単語の生成に失敗しました。後でもう一度お試しください。"
+      );
     }
   };
 
@@ -103,24 +119,30 @@ const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
   }, [initialWord, startGame]);
 
   return (
-    <div className="flex flex-col h-[80vh]">
+    <div className="flex flex-col flex-grow mt-5 pb-5">
       <div className="flex justify-between mb-4">
         <button
-          className="bg-gray-200 p-2 rounded-md cursor-pointer disabled:opacity-50"
+          className="bg-gray-200 p-2 rounded-md cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed"
           onClick={undo}
           disabled={!canUndo}
         >
-          戻る
+          <div className="flex items-center gap-2">
+            <FaUndo />
+            <span>戻る</span>
+          </div>
         </button>
         <button
-          className="bg-gray-200 p-2 rounded-md disabled:opacity-50"
+          className="bg-gray-200 p-2 rounded-md disabled:opacity-20 disabled:cursor-not-allowed"
           onClick={redo}
           disabled={!canRedo}
         >
-          進む
+          <div className="flex items-center gap-2">
+            <FaRedo />
+            <span>進む</span>
+          </div>
         </button>
       </div>
-      <div className="flex-1 border rounded-md relative">
+      <div className="flex-1 border-2 border-yellow-400 rounded-md relative">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -132,6 +154,7 @@ const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
           onPaneClick={() => {
             setActiveNode(null);
             setSuggestions([]);
+            setGeminiApiError(null);
           }}
           proOptions={proOptions}
           fitView
@@ -139,14 +162,6 @@ const GameScreen = ({ initialWord, resetGame }: GameScreenProps) => {
           <Background />
         </ReactFlow>
       </div>
-      {resetGame && (
-        <button
-          onClick={resetGame}
-          className="mt-4 text-blue-600 underline self-center"
-        >
-          最初からやり直す
-        </button>
-      )}
     </div>
   );
 };

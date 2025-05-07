@@ -20,7 +20,6 @@ const saveToHistory = (state: IGame) => {
     state.historyIndex += 1;
 };
 
-
 export const gameSlice = createSlice({
     name: 'game',
     initialState,
@@ -57,13 +56,15 @@ export const gameSlice = createSlice({
             const parentNode = state.nodes.find(n => n.id === action.payload.parentId);
             if (!parentNode) return;
 
+            const randomOffset = Math.floor(Math.random() * 200) - 100;
+
             const newNode = {
                 id: uuidv4(),
                 type: "banana" as const,
                 data: { label: action.payload.word },
                 position: {
                     x: parentNode.position.x + 150,
-                    y: parentNode.position.y
+                    y: parentNode.position.y + randomOffset
                 },
                 sourcePosition: Position.Right,
                 targetPosition: Position.Left,
@@ -113,7 +114,6 @@ export const gameSlice = createSlice({
         },
     }
 });
-
 
 export const { ...actions } = gameSlice.actions;
 

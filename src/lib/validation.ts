@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Regex for Japanese characters (hiragana, katakana, kanji)
+// ひらがな、カタカナ、漢字のみ
 const jpRegex = /^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}ー]+$/u;
 
 const wordSchema = z

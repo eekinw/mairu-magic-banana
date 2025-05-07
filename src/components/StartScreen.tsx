@@ -31,18 +31,18 @@ const StartScreen = ({
   }, [watchedWord]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center flex-grow">
       <form
         onSubmit={handleSubmit((data) => handleStartGame(data.word))}
         className="flex flex-col items-center w-full max-w-md"
       >
-        <div className="relative w-full">
+        <div className="relative max-w-2/3">
           <input
             type="text"
             {...register("word")}
             placeholder="例：バナナ🍌"
-            className={`p-3 pr-12 border rounded-md w-full text-lg ${
-              errors.word ? "border-red-500" : ""
+            className={`p-3 pr-12 bg-white border-2 rounded-md w-full text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 ${
+              errors.word ? "border-red-500 font-bold" : "border-yellow-300"
             }`}
             required
           />
@@ -55,7 +55,7 @@ const StartScreen = ({
           </button>
         </div>
         {(errors.word || error) && (
-          <div className="text-red-500 text-sm mt-2 w-full text-center">
+          <div className="text-red-500 font-bold text-sm mt-2 w-full text-center">
             {(errors.word?.message as string) || error}
           </div>
         )}

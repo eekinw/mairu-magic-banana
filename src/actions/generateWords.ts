@@ -13,7 +13,7 @@ export async function generateWords(word: string): Promise<string[]> {
 形式は以下の通りで、JSONのみを出力してください（「\`\`\`json」などのアノテーションは不要です）。
 
 {
-  result: [ "単語1", "単語2", "単語3" ]
+  "result": [ "単語1", "単語2", "単語3" ]
 }
 `;
 
