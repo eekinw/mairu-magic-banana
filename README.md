@@ -47,7 +47,6 @@ GEMINI_API_KEY=your_api_key_here
 - 簡潔、スムーズなUI
 - Lottieアニメーションによるエンゲージメント向上
 - 入力する時のバリデーション（日本語のみ、文字数制限など）
-![](/public/onlynihongo.png)
 ![](/public/minword.png)
 
 # 遊び方ガイド
