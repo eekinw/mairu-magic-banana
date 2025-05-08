@@ -156,7 +156,7 @@ const GameScreen = ({ initialWord }: GameScreenProps) => {
             setSuggestions([]);
             setGeminiApiError(null);
           }}
-          proOptions={proOptions}
+          proOptions={proOptions} // to remove watermark only
           fitView
         >
           <Background />
