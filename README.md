@@ -47,7 +47,6 @@ GEMINI_API_KEY=your_api_key_here
 - 簡潔、スムーズなUI
 - Lottieアニメーションによるエンゲージメント向上
 - 入力する時のバリデーション（日本語のみ、文字数制限など）
-![](/public/onlynihongo.png)
 ![](/public/minword.png)
 
 # 遊び方ガイド
@@ -56,7 +55,7 @@ GEMINI_API_KEY=your_api_key_here
 - 背景をつかんで動かすと、すべてのノードを一緒に移動できます
 - マウスでZoom In, Zoom Outが可能です
 - ヘッダーをクリックすると、ゲームを最初からやり直せます
-- こちらのショート動画もご覧ください: [デモ動画](https://youtu.be/your-video-id)
+- こちらのショート動画もご覧ください: [デモ動画](https://jam.dev/c/295bbce5-76e5-4c37-8912-84b27807987e)
 
 
 # 今後の改善点
